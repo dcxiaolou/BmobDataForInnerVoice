@@ -1,0 +1,2 @@
+# BmobDataForInnerVoice
+InnerVoice的后台数据处理，即本地与bmob云数据库的交互
