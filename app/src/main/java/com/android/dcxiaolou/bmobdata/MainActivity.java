@@ -1,33 +1,25 @@
 package com.android.dcxiaolou.bmobdata;
 
 import android.Manifest;
-import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.Html;
-import android.text.method.LinkMovementMethod;
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.ViewStructure;
-import android.webkit.JavascriptInterface;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.view.View;
+import android.widget.Button;
 
 import com.android.dcxiaolou.bmobdata.mode.ReadArticle;
 import com.android.dcxiaolou.bmobdata.mode.ReadArticleResult;
-import com.bumptech.glide.Glide;
+import com.android.dcxiaolou.bmobdata.util.PushDataToBmob;
 import com.google.gson.Gson;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import cn.bmob.v3.Bmob;
 import cn.bmob.v3.BmobQuery;
@@ -41,26 +33,32 @@ import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-import okio.Okio;
 
-import org.sufficientlysecure.htmltextview.HtmlAssetsImageGetter;
 import org.sufficientlysecure.htmltextview.HtmlHttpImageGetter;
-import org.sufficientlysecure.htmltextview.HtmlResImageGetter;
 import org.sufficientlysecure.htmltextview.HtmlTextView;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private ImageView imageView;
-    private TextView textView;
-    private WebView webView;
+    private Button mPushDataToArticle, mPushDataToCourse;
     private HtmlTextView htmlTextView;
+
+    private List<String> articleTypes;
+    private List<String> course;
+    private List<Integer> course_item;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Bmob.initialize(this, "7da0ead2c6b46b967b9d218b171e42e7");
+        Bmob.initialize(this, "35c39c93bd729b73efb27f9d8df9e72d");
+
+        htmlTextView = (HtmlTextView) findViewById(R.id.html_text);
+        mPushDataToArticle = (Button) findViewById(R.id.btn_push_data_to_article);
+        mPushDataToCourse = (Button) findViewById(R.id.btn_push_data_to_course);
+
+        mPushDataToArticle.setOnClickListener(this);
+        mPushDataToCourse.setOnClickListener(this);
 
         //SD卡读写权限申请
         if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE)
@@ -73,52 +71,12 @@ public class MainActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 2);
         }
 
-        //将Read->Article->.json文件上传到Bmob素材中，然后存入bmob数据库中，不然会出错：invalid file: filename empty.
-        // sdcard/Download/Read/Article
-        /*for (int i = 1; i <=142; i++) {
-            String path = "/mnt/sdcard/Download/Read/Article/" + i + ".json";
-
-            final BmobFile bombFile = new BmobFile(new File(path));
-            final int finalI = i;
-            bombFile.uploadblock(new UploadFileListener() {
-                @Override
-                public void done(BmobException e) {
-                    if (e == null) {
-                        Log.d("TAG",   "upload " + bombFile.getFilename());
-                        final ReadArticle readArticle = new ReadArticle();
-                        readArticle.setId(String.valueOf(finalI));
-                        readArticle.setBmobFile(bombFile);
-                        readArticle.save(new SaveListener<String>() {
-                            @Override
-                            public void done(String s, BmobException e) {
-                                if (e == null) {
-                                    Log.d("TAG", "add " + finalI + ".json to db");
-                                } else {
-                                    Log.d("TAG", e.getMessage());
-                                }
-                            }
-                        });
-                    } else {
-                        Log.d("TAG", e.getMessage());
-                    }
-                }
-            });
-        }*/
-
-
-        imageView = (ImageView) findViewById(R.id.image_view);
-        textView = (TextView) findViewById(R.id.text_view);
-        webView = (WebView) findViewById(R.id.web_view);
-        htmlTextView = (HtmlTextView) findViewById(R.id.html_text);
-
-
-        BmobQuery<ReadArticle> query = new BmobQuery<>();
+        // 请求read下的article，并对返回的json文件进行解析，使用html_textview显示html
+        /*BmobQuery<ReadArticle> query = new BmobQuery<>();
         query.getObject("9d1e0024e7", new QueryListener<ReadArticle>() {
             @Override
             public void done(ReadArticle readArticle, BmobException e) {
                 if (e == null) {
-                    String id = readArticle.getId();
-                    Log.d("TAG", id);
                     BmobFile file = readArticle.getBmobFile();
                     String fileUrl = file.getFileUrl();
                     Log.d("TAG", file.getFilename() + "  " + fileUrl);
@@ -160,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
                     Log.d("TAG", e.getMessage());
                 }
             }
-        });
+        });*/
 
     }
 
@@ -190,4 +148,72 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.btn_push_data_to_article:
+                //将Read->Article->.json文件上传到Bmob素材中，然后存入bmob数据库中，不然会出错：invalid file: filename empty.
+                // /mnt/sdcard/Download/Read/Article/2199_100.json
+                articleTypes = new ArrayList<>();
+                articleTypes.add("792");
+                articleTypes.add("876");
+                articleTypes.add("660");
+                articleTypes.add("2206");
+                articleTypes.add("2199");
+                articleTypes.add("862");
+                articleTypes.add("823");
+                articleTypes.add("844");
+                String articlePath;
+                for (String type : articleTypes) {
+                    for (int i = 1; i <= 20; i++) {
+                        // /mnt/sdcard/Download/Read/Article/2206_9.json
+                        articlePath = "/mnt/sdcard/Download/Read/Article/" + type + "_" + i + ".json";
+                        PushDataToBmob.PushArticle(articlePath, type);
+                    }
+                }
+                Log.d("TAG", "done");
+                break;
+            case R.id.btn_push_data_to_course:
+                course = new ArrayList<>();
+                course.add("1");
+                course.add("4");
+                course.add("5");
+                course.add("6");
+                course.add("7");
+                course.add("8");
+                course.add("35");
+                course.add("136");
+                course.add("192");
+                course.add("194");
+                course.add("202");
+                course.add("228");
+                course.add("237");
+                course.add("244");
+                course_item = new ArrayList<>();
+                for (int i = 1; i <= 9; i++)
+                    course_item.add(1);
+                course_item.add(189);
+                course_item.add(1);
+                course_item.add(1);
+                course_item.add(1);
+                course_item.add(1);
+                String coursePath;
+                int item = 0;
+                for (String course : course) {
+                    int sum = course_item.get(item);
+                    if (sum > 100) sum = 100; // 防止上传的文件太多传不上去
+                    for (int i = 1; i <= sum; i++) {
+                        // /mnt/sdcard/Download/Course/136_1.json
+                        coursePath = "/mnt/sdcard/Download/Course/" + course + "_" + i + ".json";
+                        // Log.d("TAG", coursePath);
+                        PushDataToBmob.PushCourse(coursePath);
+                    }
+                    item++;
+                }
+                Log.d("TAG", "done");
+                break;
+            default:
+                break;
+        }
+    }
 }

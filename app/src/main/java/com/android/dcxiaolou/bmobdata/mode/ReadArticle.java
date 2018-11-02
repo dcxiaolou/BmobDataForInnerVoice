@@ -5,22 +5,22 @@ import cn.bmob.v3.datatype.BmobFile;
 
 public class ReadArticle extends BmobObject {
 
-    private String id;
-    private BmobFile bmobFile;
+    private String type;
+    private BmobFile article;
 
-    public String getId() {
-        return id;
+    public String getType() {
+        return type;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setType(String type) {
+        this.type = type;
     }
 
     public BmobFile getBmobFile() {
-        return bmobFile;
+        return article;
     }
 
-    public void setBmobFile(BmobFile bmobFile) {
-        this.bmobFile = bmobFile;
+    public void setBmobFile(BmobFile article) {
+        this.article = article;
     }
 }
