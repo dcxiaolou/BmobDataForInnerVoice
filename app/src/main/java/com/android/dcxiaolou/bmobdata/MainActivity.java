@@ -11,40 +11,23 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
-import com.android.dcxiaolou.bmobdata.mode.ReadArticle;
-import com.android.dcxiaolou.bmobdata.mode.ReadArticleResult;
 import com.android.dcxiaolou.bmobdata.util.PushDataToBmob;
-import com.google.gson.Gson;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import cn.bmob.v3.Bmob;
-import cn.bmob.v3.BmobQuery;
-import cn.bmob.v3.datatype.BmobFile;
-import cn.bmob.v3.exception.BmobException;
-import cn.bmob.v3.listener.QueryListener;
-import cn.bmob.v3.listener.SaveListener;
-import cn.bmob.v3.listener.UploadFileListener;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 
-import org.sufficientlysecure.htmltextview.HtmlHttpImageGetter;
 import org.sufficientlysecure.htmltextview.HtmlTextView;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private Button mPushDataToArticle, mPushDataToCourse;
+    private Button mPushDataToArticle, mPushIntroduceToCourse, mPushDetailToCourse;
     private HtmlTextView htmlTextView;
 
     private List<String> articleTypes;
-    private List<String> course;
-    private List<Integer> course_item;
+    private List<String> courseID = new ArrayList<>();
+    private List<Integer> coursedetail = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,10 +38,36 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         htmlTextView = (HtmlTextView) findViewById(R.id.html_text);
         mPushDataToArticle = (Button) findViewById(R.id.btn_push_data_to_article);
-        mPushDataToCourse = (Button) findViewById(R.id.btn_push_data_to_course);
+        mPushIntroduceToCourse = (Button) findViewById(R.id.btn_push_introduce_to_course);
+        mPushDetailToCourse = (Button) findViewById(R.id.btn_push_detail_to_course);
 
         mPushDataToArticle.setOnClickListener(this);
-        mPushDataToCourse.setOnClickListener(this);
+        mPushIntroduceToCourse.setOnClickListener(this);
+        mPushDetailToCourse.setOnClickListener(this);
+
+        courseID.add("1");
+        courseID.add("4");
+        courseID.add("5");
+        courseID.add("6");
+        courseID.add("7");
+        courseID.add("8");
+        courseID.add("35");
+        courseID.add("136");
+        courseID.add("192");
+        courseID.add("194");
+        courseID.add("202");
+        courseID.add("228");
+        courseID.add("237");
+        courseID.add("244");
+
+        for (int i = 1; i <= 9; i++)
+            coursedetail.add(1);
+        coursedetail.add(189);
+        coursedetail.add(1);
+        coursedetail.add(1);
+        coursedetail.add(1);
+        coursedetail.add(1);
+
 
         //SD卡读写权限申请
         if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE)
@@ -171,46 +180,32 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         PushDataToBmob.PushArticle(articlePath, type);
                     }
                 }
-                Log.d("TAG", "done");
+                Log.d("TAG", "push data to article done");
                 break;
-            case R.id.btn_push_data_to_course:
-                course = new ArrayList<>();
-                course.add("1");
-                course.add("4");
-                course.add("5");
-                course.add("6");
-                course.add("7");
-                course.add("8");
-                course.add("35");
-                course.add("136");
-                course.add("192");
-                course.add("194");
-                course.add("202");
-                course.add("228");
-                course.add("237");
-                course.add("244");
-                course_item = new ArrayList<>();
-                for (int i = 1; i <= 9; i++)
-                    course_item.add(1);
-                course_item.add(189);
-                course_item.add(1);
-                course_item.add(1);
-                course_item.add(1);
-                course_item.add(1);
+            case R.id.btn_push_introduce_to_course:
+                String courseIntroducePath;
+                for (String id : courseID) {
+                    courseIntroducePath = "/mnt/sdcard/Download/Course/introduce/" + id + ".json";
+                    PushDataToBmob.PushIntroduceToCourse(courseIntroducePath);
+                }
+                Log.d("TAG", "PushIntroduceToCourse done");
+                break;
+            case R.id.btn_push_detail_to_course:
                 String coursePath;
                 int item = 0;
-                for (String course : course) {
-                    int sum = course_item.get(item);
+                Log.d("TAG", "courseID = " + courseID.size());
+                for (String course : courseID) {
+                    int sum = coursedetail.get(item);
                     if (sum > 100) sum = 100; // 防止上传的文件太多传不上去
                     for (int i = 1; i <= sum; i++) {
                         // /mnt/sdcard/Download/Course/136_1.json
                         coursePath = "/mnt/sdcard/Download/Course/" + course + "_" + i + ".json";
-                        // Log.d("TAG", coursePath);
-                        PushDataToBmob.PushCourse(coursePath);
+                        //Log.d("TAG", coursePath);
+                        PushDataToBmob.PushDetailToCourse(coursePath);
                     }
                     item++;
                 }
-                Log.d("TAG", "done");
+                Log.d("TAG", "PushDetailToCourse done");
                 break;
             default:
                 break;

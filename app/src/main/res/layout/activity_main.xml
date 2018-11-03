@@ -13,11 +13,19 @@
         android:textAllCaps="false" />
 
     <Button
-        android:id="@+id/btn_push_data_to_course"
+        android:id="@+id/btn_push_introduce_to_course"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:text="Push Data To Course"
+        android:text="Push Introduce To Course"
+        android:textAllCaps="false"/>
+
+    <Button
+        android:id="@+id/btn_push_detail_to_course"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:text="Push Detail To Course"
         android:textAllCaps="false"/>
 
     <org.sufficientlysecure.htmltextview.HtmlTextView

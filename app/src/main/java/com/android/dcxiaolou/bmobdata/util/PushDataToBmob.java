@@ -2,7 +2,8 @@ package com.android.dcxiaolou.bmobdata.util;
 
 import android.util.Log;
 
-import com.android.dcxiaolou.bmobdata.mode.Course;
+import com.android.dcxiaolou.bmobdata.mode.CourseDetail;
+import com.android.dcxiaolou.bmobdata.mode.CourseIntroduce;
 import com.android.dcxiaolou.bmobdata.mode.ReadArticle;
 
 import java.io.File;
@@ -55,21 +56,48 @@ public class PushDataToBmob {
         });
     }
 
-    //将Course下的json文件上传到Bmob素材中，然后存入bmob数据库中
-    public static void PushCourse(String coursePath) {
+    //将Course下的introduce文件上传到Bmob素材中，然后存入bmob数据库中
+    public static void PushIntroduceToCourse(String coursePath) {
         final BmobFile file = new BmobFile(new File(coursePath));
         file.uploadblock(new UploadFileListener() {
             @Override
             public void done(BmobException e) {
                 if (e == null) {
-                    Log.d(TAG, "upload course " + file.getFilename());
-                    Course course = new Course();
-                    course.setCourse(file);
-                    course.save(new SaveListener<String>() {
+                    Log.d(TAG, "upload courseIntroduce " + file.getFilename());
+                    CourseIntroduce courseIntroduce = new CourseIntroduce();
+                    courseIntroduce.setCourse(file);
+                    courseIntroduce.save(new SaveListener<String>() {
                         @Override
                         public void done(String s, BmobException e) {
                             if (e == null) {
-                                Log.d(TAG, "add course " + file.getFilename() + " to db");
+                                Log.d(TAG, "add courseIntroduce " + file.getFilename() + " to db");
+                            } else {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+                } else {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    //将Course下的detail文件上传到Bmob素材中，然后存入bmob数据库中
+    public static void PushDetailToCourse(String coursePath) {
+        final BmobFile file = new BmobFile(new File(coursePath));
+        file.uploadblock(new UploadFileListener() {
+            @Override
+            public void done(BmobException e) {
+                if (e == null) {
+                    Log.d(TAG, "upload courseIntroduce " + file.getFilename());
+                    CourseDetail courseDetail = new CourseDetail();
+                    courseDetail.setCourse(file);
+                    courseDetail.save(new SaveListener<String>() {
+                        @Override
+                        public void done(String s, BmobException e) {
+                            if (e == null) {
+                                Log.d(TAG, "add courseIntroduce " + file.getFilename() + " to db");
                             } else {
                                 e.printStackTrace();
                             }
