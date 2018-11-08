@@ -7,11 +7,11 @@ public class CourseIntroduce extends BmobObject {
 
     private BmobFile introduce;
 
-    public BmobFile getCourse() {
+    public BmobFile getIntroduce() {
         return introduce;
     }
 
-    public void setCourse(BmobFile introduce) {
+    public void setIntroduce(BmobFile introduce) {
         this.introduce = introduce;
     }
 }

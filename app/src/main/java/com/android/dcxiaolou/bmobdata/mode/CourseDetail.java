@@ -7,11 +7,11 @@ public class CourseDetail extends BmobObject {
 
     private BmobFile detail;
 
-    public BmobFile getCourse() {
+    public BmobFile getDetail() {
         return detail;
     }
 
-    public void setCourse(BmobFile detail) {
+    public void setDetail(BmobFile detail) {
         this.detail = detail;
     }
 }

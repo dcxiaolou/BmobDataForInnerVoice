@@ -13,6 +13,14 @@
         android:textAllCaps="false" />
 
     <Button
+        android:id="@+id/btn_push_data_to_common"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:text="Push Data To Common"
+        android:textAllCaps="false"/>
+
+    <Button
         android:id="@+id/btn_push_introduce_to_course"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -28,13 +36,12 @@
         android:text="Push Detail To Course"
         android:textAllCaps="false"/>
 
-    <org.sufficientlysecure.htmltextview.HtmlTextView
-        android:id="@+id/html_text"
+    <Button
+        android:id="@+id/btn_push_FM_to_bmob"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:textAppearance="@android:style/TextAppearance.Small"
-        android:textSize="16sp" />
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:text="Push FM To Bmob"
+        android:textAllCaps="false"/>
 
 </LinearLayout>
