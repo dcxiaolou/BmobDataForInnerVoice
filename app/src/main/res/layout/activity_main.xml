@@ -44,4 +44,20 @@
         android:text="Push FM To Bmob"
         android:textAllCaps="false"/>
 
+    <Button
+        android:id="@+id/btn_push_question_to_bmob"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:text="Push Question To Bmob"
+        android:textAllCaps="false"/>
+
+    <Button
+        android:id="@+id/btn_push_answer_to_bmob"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:text="Push Answer To Bmob"
+        android:textAllCaps="false"/>
+
 </LinearLayout>

@@ -2,6 +2,7 @@ package com.android.dcxiaolou.bmobdata;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.nfc.Tag;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -22,7 +23,7 @@ import cn.bmob.v3.Bmob;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private Button mPushDataToArticle, mPushIntroduceToCourse, mPushDetailToCourse,
-            mPushDataToCommon, mPushFmToBmob;
+            mPushDataToCommon, mPushFmToBmob, mPushQuestionToBmob, mPushAnswerToBmob;
 
     private List<String> articleTypes = new ArrayList<>();;
     private List<String> courseID = new ArrayList<>();
@@ -39,12 +40,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mPushDetailToCourse = (Button) findViewById(R.id.btn_push_detail_to_course);
         mPushDataToCommon = (Button) findViewById(R.id.btn_push_data_to_common);
         mPushFmToBmob = (Button) findViewById(R.id.btn_push_FM_to_bmob);
+        mPushQuestionToBmob = (Button) findViewById(R.id.btn_push_question_to_bmob);
+        mPushAnswerToBmob = (Button) findViewById(R.id.btn_push_answer_to_bmob);
 
         mPushDataToArticle.setOnClickListener(this);
         mPushIntroduceToCourse.setOnClickListener(this);
         mPushDetailToCourse.setOnClickListener(this);
         mPushDataToCommon.setOnClickListener(this);
         mPushFmToBmob.setOnClickListener(this);
+        mPushQuestionToBmob.setOnClickListener(this);
+        mPushAnswerToBmob.setOnClickListener(this);
 
         articleTypes.add("792");
         articleTypes.add("876");
@@ -192,6 +197,32 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             // /sdcard/Download/FM/1_1_1.json
                             fmPath = "/sdcard/Download/FM/" + i + "_" + j + "_" + k + ".json";
                             //PushDataToBmob.PushFMToBmob("" + i, "" + j, fmPath);
+                        }
+                    }
+                }
+                break;
+
+            case R.id.btn_push_question_to_bmob:
+                // /sdcard/Download/QuestionAndAnswer/Question/1.json
+                String questionPath;
+                for (int i = 1; i <= 50; i++) {
+                    questionPath = "/sdcard/Download/QuestionAndAnswer/Question/" + i + ".json";
+                    Log.d("TAG", questionPath);
+                    //PushDataToBmob.PushQuestionToBmob(questionPath);
+                }
+                break;
+
+            case R.id.btn_push_answer_to_bmob:
+                // /sdcard/Download/QuestionAndAnswer/Answer/10_1.json
+                String answerPath;
+                //分批次上传
+                for (int i = 41; i <= 50; i++) {
+                    for (int j = 1; j <= 10; j++) {
+                        answerPath = "/sdcard/Download/QuestionAndAnswer/Answer/" + i + "_" + j + ".json";
+                        File file = new File(answerPath);
+                        if (file.exists()) {
+                            Log.d("TAG", answerPath);
+                            PushDataToBmob.PushAnswerToBmob("" + i, answerPath);
                         }
                     }
                 }

@@ -2,9 +2,11 @@ package com.android.dcxiaolou.bmobdata.util;
 
 import android.util.Log;
 
+import com.android.dcxiaolou.bmobdata.mode.Answer;
 import com.android.dcxiaolou.bmobdata.mode.CourseDetail;
 import com.android.dcxiaolou.bmobdata.mode.CourseIntroduce;
 import com.android.dcxiaolou.bmobdata.mode.FM;
+import com.android.dcxiaolou.bmobdata.mode.Question;
 import com.android.dcxiaolou.bmobdata.mode.ReadArticle;
 import com.android.dcxiaolou.bmobdata.mode.ReadCommon;
 
@@ -161,4 +163,60 @@ public class PushDataToBmob {
             }
         });
     }
+
+    //将QuestionAndAnswer中的Question文件上传到bmob素材中， 然后在存入bmob数据库中
+    public static void PushQuestionToBmob(String questionPath) {
+        final BmobFile file = new BmobFile(new File(questionPath));
+        file.uploadblock(new UploadFileListener() {
+            @Override
+            public void done(BmobException e) {
+                if (e == null) {
+                    Log.d(TAG,"upload question " + file.getFilename());
+                    Question question = new Question();
+                    question.setQuestion(file);
+                    question.save(new SaveListener<String>() {
+                        @Override
+                        public void done(String s, BmobException e) {
+                            if (e == null) {
+                                Log.d(TAG, "add " + file.getFilename() + " to db");
+                            } else {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+                } else {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    //将QuestionAndAnswer中的Answer文件上传到bmob素材中， 然后在存入bmob数据库中
+    public static void PushAnswerToBmob(final String type, String answerPath) {
+        final BmobFile file = new BmobFile(new File(answerPath));
+        file.uploadblock(new UploadFileListener() {
+            @Override
+            public void done(BmobException e) {
+                if (e == null) {
+                    Log.d(TAG,"upload answer " + file.getFilename());
+                    Answer answer = new Answer();
+                    answer.setType(type);
+                    answer.setAnswer(file);
+                    answer.save(new SaveListener<String>() {
+                        @Override
+                        public void done(String s, BmobException e) {
+                            if (e == null) {
+                                Log.d(TAG, "add " + file.getFilename() + " to db");
+                            } else {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+                } else {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
 }
